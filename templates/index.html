@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fb;
+            color: #333;
+            padding: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 36px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 28px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 20px;
+            color: #007BFF;
+            margin-bottom: 10px;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-container select,
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-container select:hover,
+        .form-container button:hover {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .form-container button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+        }
+
+        .form-container select:focus,
+        .form-container button:focus {
+            outline: none;
+        }
+
+        .plot-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .plot-container img {
+            max-width: 90%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .plot-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .plot-description {
+            margin-top: 10px;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .prediction-list {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            list-style-type: none;
+        }
+
+        .prediction-list li {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .prediction-list li:nth-child(odd) {
+            background-color: #f7f7f7;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .prediction-list li:nth-child(even) {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .no-plots {
+            text-align: center;
+            font-size: 18px;
+            color: #888;
+            margin-top: 20px;
+        }
+  .back-button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 20px;
+            font-size: 18px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .form-container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Prediction Results</h1>
+
+    <div class="form-container">
+        <form method="POST" action="/predict">
+            <label for="category">Select Category for Prediction:</label>
+            <select name="category" id="category">
+                <option value="CropType">Crop Type</option>
+                <option value="Region">Region</option>
+                <option value="Season">Season</option>
+                <option value="SoilType">Soil Type</option>
+                <option value="Rainfall (mm)">Rainfall</option>
+                <option value="Temperature (°C)">Temperature</option>
+                <option value="FertilizerUsed (kg)">Fertilizer Used</option>
+                <option value="PesticidesUsed (kg)">Pesticides Used</option>
+            </select>
+            <button type="submit">Generate Plots</button>
+        </form>
+    </div>
+
+    {% if plot_images %}
+    <h2>Generated Plots</h2>
+    <div class="plot-container">
+        {% for i in range(plot_images|length) %}
+        <div>
+            <h3>Plot {{ i + 1 }}:</h3>
+            <img src="{{ plot_images[i] }}" alt="Plot {{ i + 1 }}" />
+            <p class="plot-description">{{ plot_descriptions[i] }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="no-plots">No plots available yet. Please select a category to generate plots.</p>
+    {% endif %}
+
+    {% if prediction %}
+    <h2>Predicted Inventory Levels</h2>
+    <ul class="prediction-list">
+        {% for pred in prediction %}
+            <li>{{ pred }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+<center> <a href="/" class="back-button">Back to Home</a></center>
+</body>
+</html>
