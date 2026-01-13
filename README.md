@@ -11,7 +11,7 @@
 
 ## Technologies Used
   **Programming Language:** Python  
-  **Web Framework:** Django  
+  **Web Framework:** Flask
   **Machine Learning Libraries:** Scikit-learn, Pandas, NumPy  
   **Database:** SQLite  
   **Frontend Technologies:** HTML, CSS, JavaScript  
